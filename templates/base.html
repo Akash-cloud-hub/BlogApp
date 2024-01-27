@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}  {% endblock %} • The Wandering Compass</title>
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+</head>
+<body class="single is-preload">
+
+<!--    wrapper-->
+    <div id="wrapper">
+        <header id="header">
+            <h1><a href="{{url_for('home')}}">The Wandering Compass</a></h1>
+
+            <nav class="links">
+                <ul>
+                    <li><a href="{{url_for('home')}}">Home</a></li>
+                    <li><a href="{{url_for('about')}}">About</a></li>
+                    <li><a href="{{url_for('login')}}">Log In</a></li>
+                    <li><a href="{{url_for('contact')}}">Contact</a></li>
+                </ul>
+            </nav>
+
+            <nav class="main">
+                <ul>
+                    <li class="search">
+<!--                        '#' used to jump between the pages-->
+                        <a  class="fa-search" href="#search">Search</a>
+                        <form id="search" action="#" method="get">
+                            <input type="text" name="query" placeholder="Search..."/>
+                        </form>
+                    </li>
+                    <li class="menu">
+                        <a class="fa-bars" href="#menu">Menu</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+<!--        menu-->
+        <section id="menu">
+<!--            search-->
+            <section>
+                <form class="search" action="#" method="get">
+                    <input type="text" name="query" placeholder="Search..."/>
+                </form>
+            </section>
+
+<!--            links-->
+            <section>
+                <ul class="links">
+                    <li>
+                        <a href="#">
+                            <h3>Dummy Link</h3>
+                            <p>This is a paragram related to the dummy link</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h3>Dummy Link</h3>
+                            <p>This is a paragram related to the dummy link</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h3>Dummy Link</h3>
+                            <p>This is a paragram related to the dummy link</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <h3>Dummy Link</h3>
+                            <p>This is a paragram related to the dummy link</p>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+<!--            Actions-->
+            <section>
+                <ul class="actions stacked">
+                    <li><a href="#" class="button large fit">Log In</a></li>
+                </ul>
+            </section>
+        </section>
+
+<!--        Main-->
+        <div id="main">
+            {% block body %}
+
+            {% endblock %}
+        </div>
+
+<!--        Footer-->
+
+        <section id="footer">
+            <ul class="icons">
+                <li><a href="#" class="icon bands fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon bands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon bands fa-instagram"><span class="label">Instagram</span></a></li>
+                <li><a href="#" class="icon bands fa-rss"><span class="label">Rss</span></a></li>
+                <li><a href="#" class="icon bands fa-envelope"><span class="label">Email</span></a></li>
+            </ul>
+            <p class="copyright">
+                © Akash's Blog App <a href="https://twitter.com/A_Irshula"></a>
+            </p>
+        </section>
+
+    </div>
+
+<!--Scripts-->
+
+    <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/browser.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/breakpoints.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/util.js')}}"></script>
+    <script src="{{url_for('static',filename='js/main.js')}}"></script>
+
+</body>-
+</html>

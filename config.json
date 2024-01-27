@@ -1,0 +1,10 @@
+{
+  "parameters": {
+    "server_name": "ABCIS-210013\\SQLEXPRESS",
+    "database_name": "BlogApp",
+    "DRIVER": "ODBC Driver 17 for SQL Server"
+  },
+  "connectionString": {
+    "BlogApp": "DRIVER=ODBC Driver 17 for SQL Server;SERVER=ABCIS-210013\\SQLEXPRESS;DATABASE=BlogApp;Trusted_Connection=yes;"
+  }
+}
