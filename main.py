@@ -24,19 +24,25 @@ def connectToDb():
     cursor = cnxn.cursor()
     return cursor
 
-# def main():
-#     records = cursor.execute('SELECT * FROM Users')
-#     users = utility.fetch_data_as_list_of_dicts(records)
-#     print(users)
+def performCRUD(query):
+    cursor = connectToDb()
+    records = cursor.execute(query)
+    list_of_records = utility.fetch_data_as_list_of_dicts(records)
+    # print(users)
+    return list_of_records
 
 @app.route('/')
 def home():
-    post = None
+    post = performCRUD("Select * From Posts")
+    # print(post)
     return render_template("post.html",post = post)
 
-@app.route('/post')
-def post():
-    return render_template("post.html")
+@app.route('/post/<slug>', methods = ['GET'])
+def post(slug):
+    print(slug)
+    singlePost = performCRUD(f"Select * From Posts Where Slug = '{slug}' ")[0]
+    print(singlePost)
+    return render_template("post.html", post = singlePost)
 
 @app.route('/login')
 def login():
