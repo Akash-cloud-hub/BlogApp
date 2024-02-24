@@ -1,4 +1,4 @@
-from flask import Flask , redirect , url_for , render_template , session , flash
+from flask import Flask , redirect , url_for , render_template , session , flash , request
 from datetime import *
 import math
 import json
@@ -27,30 +27,72 @@ def connectToDb():
 def performCRUD(query):
     cursor = connectToDb()
     records = cursor.execute(query)
-    list_of_records = utility.fetch_data_as_list_of_dicts(records)
+    # list_of_records = utility.fetch_data_as_list_of_dicts(records)
     # print(users)
-    return list_of_records
+    return records
 
 @app.route('/')
 def home():
-    post = performCRUD("Select * From Posts")
+    records = performCRUD("Select * From Posts")
+    post = utility.fetch_data_as_list_of_dicts(records)
+
     # print(post)
     return render_template("post.html",post = post)
 
 @app.route('/post/<slug>', methods = ['GET'])
 def post(slug):
     print(slug)
-    singlePost = performCRUD(f"Select * From Posts Where Slug = '{slug}' ")[0]
+    records = performCRUD(f"Select * From Posts Where Slug = '{slug}' ")
+    singlePost = utility.fetch_data_as_list_of_dicts(records)[0]
+
     print(singlePost)
     return render_template("post.html", post = singlePost)
 
-@app.route('/login')
-def login():
-    return "login"
+
 
 @app.route('/about')
 def about():
-    return "about"
+    return render_template("about.html")
+
+@app.route('/signup',methods = ['GET','POST'])
+def signup():
+    if request.method == 'POST':
+        NameOfUser = request.form.get('NameOfUser')
+        Email = request.form.get('Email')
+        UserName = request.form.get('UserName')
+        Password = request.form.get('Password')
+
+        records = performCRUD(f"Select * From Users Where Email = '{Email}' ")
+        user = utility.fetch_data_as_list_of_dicts(records)
+        if user:
+            flash('Email address already exists')
+            return redirect(url_for('signup'))
+
+        query = f'''INSERT INTO [Users]
+( 
+ [NameOfUser], [Email], [UserName],[Password]
+)
+VALUES
+( 
+ '{NameOfUser}', '{Email}', '{UserName}','{Password}'
+)'''
+        print(query)
+        result = performCRUD(query)
+        result.commit()
+        print(result)
+        result.close()
+
+        return redirect(url_for('login'))
+    return render_template("signup.html")
+
+@app.route('/login',methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        UserName = request.form.get('UserName')
+        Password = request.form.get('Password')
+        records = performCRUD(f"Select * From Users Where UserName = '{UserName}' and Password='{Password}' ")
+        user = utility.fetch_data_as_list_of_dicts(records)
+    return "login"
 
 @app.route('/contact')
 def contact():

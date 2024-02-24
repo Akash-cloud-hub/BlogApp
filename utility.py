@@ -10,3 +10,5 @@ def fetch_data_as_list_of_dicts(records):
         list_of_dicts.append(row_dict)
 
     return list_of_dicts
+
+
