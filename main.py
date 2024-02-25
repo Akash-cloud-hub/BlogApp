@@ -7,6 +7,8 @@ import utility
 import pyodbc
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'this_is_the_secret_key'
+
 def connectToDb():
     with open('config.json',"r") as c:
         conString = json.load(c)['connectionString']['BlogApp']
@@ -31,22 +33,46 @@ def performCRUD(query):
     # print(users)
     return records
 
+def authorize_user(UserId):
+    records = performCRUD(
+        f"Select UserId , NameOfUser  From Users Where UserId = '{UserId}' ")
+    user = utility.fetch_data_as_list_of_dicts(records)
+    if user:
+        return True
+    else:
+        return False
+
 @app.route('/')
 def home():
-    records = performCRUD("Select * From Posts")
-    post = utility.fetch_data_as_list_of_dicts(records)
+    # records = performCRUD("Select * From Posts")
+    # post = utility.fetch_data_as_list_of_dicts(records)
 
-    # print(post)
-    return render_template("post.html",post = post)
+    # Check if 'username' is in session
+    if 'UserId' in session:
+        return 'Logged in as ' + session['NameOfUser'] + '<br>' + \
+            "<b><a href = '/logout'>click here to log out</a></b>"
+
+    return "You are not logged in <br><a href = '/login'></b>" + \
+        "click here to log in</b></a>"
+
 
 @app.route('/post/<slug>', methods = ['GET'])
 def post(slug):
     print(slug)
-    records = performCRUD(f"Select * From Posts Where Slug = '{slug}' ")
-    singlePost = utility.fetch_data_as_list_of_dicts(records)[0]
+    UserId = session.get('UserId')
 
-    print(singlePost)
-    return render_template("post.html", post = singlePost)
+    is_user_authorized = False
+    if UserId:
+        is_user_authorized = authorize_user(UserId)
+
+    if is_user_authorized:
+        records = performCRUD(f"Select * From Posts Where Slug = '{slug}' ")
+        singlePost = utility.fetch_data_as_list_of_dicts(records)[0]
+
+        print(singlePost)
+        return render_template("post.html", post = singlePost)
+    else:
+        return redirect(url_for('home'))
 
 
 
@@ -90,9 +116,33 @@ def login():
     if request.method == 'POST':
         UserName = request.form.get('UserName')
         Password = request.form.get('Password')
-        records = performCRUD(f"Select * From Users Where UserName = '{UserName}' and Password='{Password}' ")
+        records = performCRUD(f"Select UserId , NameOfUser  From Users Where UserName = '{UserName}' and Password='{Password}' ")
         user = utility.fetch_data_as_list_of_dicts(records)
-    return "login"
+
+        print(user)
+
+        session['NameOfUser'] = user[0]['NameOfUser']
+        # session['UserName'] = user[0]['UserName']
+        session['UserId'] = user[0]['UserId']
+
+        print(records)
+        if user:
+            print("home")
+            return redirect(url_for('home'))
+        else:
+            flash("Password or username is incorrect , please try again !")
+            # return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+# @app.route('/')
+# def index():
+#     # Check if 'username' is in session
+#     if 'UserName' in session:
+#         return 'Logged in as ' + session['UserName'] + '<br>' + \
+#                "<b><a href = '/logout'>click here to log out</a></b>"
+#     return "You are not logged in <br><a href = '/login'></b>" + \
+#            "click here to log in</b></a>"
 
 @app.route('/contact')
 def contact():
