@@ -4,6 +4,8 @@ import math
 import json
 import utility
 
+import re
+
 import pyodbc
 
 app = Flask(__name__)
@@ -28,10 +30,10 @@ def connectToDb():
 
 def performCRUD(query):
     cursor = connectToDb()
-    records = cursor.execute(query)
+    cursor = cursor.execute(query)
     # list_of_records = utility.fetch_data_as_list_of_dicts(records)
     # print(users)
-    return records
+    return cursor
 
 def authorize_user(UserId):
     records = performCRUD(
@@ -54,6 +56,23 @@ def home():
 
     return "You are not logged in <br><a href = '/login'></b>" + \
         "click here to log in</b></a>"
+
+@app.route('/posts',methods=['GET'])
+def posts():
+    UserId = session.get('UserId')
+
+    is_user_authorized = False
+    if UserId:
+        is_user_authorized = authorize_user(UserId)
+
+    if is_user_authorized:
+        records = performCRUD(f"Select * From Posts ")
+        posts = utility.fetch_data_as_list_of_dicts(records)
+
+        print(posts)
+        return render_template("post.html", post=posts)
+    else:
+        return redirect(url_for('home'))
 
 
 @app.route('/post/<slug>', methods = ['GET'])
@@ -134,6 +153,54 @@ def login():
             # return redirect(url_for('login'))
 
     return render_template('login.html')
+
+@app.route('/create_post',methods=['POST','GET'])
+def create_post():
+    if request.method=='POST':
+        data = {}
+        try:
+            data = dict(request.form)
+            data['DatePosted'] = utility.format_datetime(data.get('DatePosted'))
+        except:
+            return "There has been an error creating the post , please try again !"
+
+        print(data)
+        query = f'''
+            INSERT INTO [Posts]
+            ( 
+                    [Title]
+                  ,[Subtitle]
+                  ,[Location]
+                  ,[Author]
+                  ,[DatePosted]
+                  ,[Image]
+                  ,[Content1]
+                  ,[Content2]
+                  ,[Slug]
+            )
+            VALUES
+            ( 
+                    '{data.get('Title')}'
+                  ,'{data.get('Subtitle')}'
+                  ,'{data.get('Location')}'
+                  ,'{data.get('Author')}'
+                  ,'{data.get('DatePosted')}'
+                  ,'{data.get('Image')}'
+                  ,'{data.get('Content1')}'
+                  ,'{data.get('Content2')}'
+                  ,'{data.get('Slug')}'
+            )
+                    '''
+        print(query)
+
+        cursor = performCRUD(query)
+        cursor.commit()
+        print(cursor)
+
+        return redirect(url_for('post'))
+
+    return render_template('create_post.html')
+
 
 # @app.route('/')
 # def index():

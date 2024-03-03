@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Library{% endblock %}
+    {% block body %}
+<!--        Post-->
+        <article class="post">
+            <header>
+                <div class="title">
+                    <h2><a href="#">{{post.Title}}</a></h2>
+                    <p>{{post.Subtitle}}</p>
+                </div>
+                <div class="meta">
+                    <time class="published" datetime="2015-11-01">{{post.DatePosted}}</time>
+                    <a href="#" class="author"><span class="name">{{post.Author}}</span></a>
+                </div>
+            </header>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Author</th>
+                        <th>Author</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Date-Time Posted</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+            </table>
+        </article>
+    {% endblock %}
