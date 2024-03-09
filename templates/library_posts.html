@@ -3,22 +3,11 @@
     {% block body %}
 <!--        Post-->
         <article class="post">
-            <header>
-                <div class="title">
-                    <h2><a href="#">{{post.Title}}</a></h2>
-                    <p>{{post.Subtitle}}</p>
-                </div>
-                <div class="meta">
-                    <time class="published" datetime="2015-11-01">{{post.DatePosted}}</time>
-                    <a href="#" class="author"><span class="name">{{post.Author}}</span></a>
-                </div>
-            </header>
 
             <table>
                 <thead>
                     <tr>
                         <th>Rank</th>
-                        <th>Author</th>
                         <th>Author</th>
                         <th>Title</th>
                         <th>Subtitle</th>
@@ -26,6 +15,19 @@
                         <th>Link</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td>{{post['Author']}}</td>
+                        <td>{{post['Title']}}</td>=
+                        <td>{{post['Subtitle']}}</td>
+                        <td>{{post['DatePosted']}}</td>
+                        <td><a href="/post/{{post['Slug']}}">Link</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
+
         </article>
     {% endblock %}

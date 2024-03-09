@@ -74,6 +74,17 @@ def posts():
     else:
         return redirect(url_for('home'))
 
+@app.route("/Library",methods=['GET'])
+def postlibrary():
+    if request.method == 'GET':
+        records = performCRUD(f"Select * From Posts")
+        posts = utility.fetch_data_as_list_of_dicts(records)
+        print(posts)
+        return render_template('library_posts.html' , posts = posts)
+    else:
+        error = {'error_message': 'Request failed , please make a Get Request ! ' }
+        return render_template('error.html', error=error)
+
 
 @app.route('/post/<slug>', methods = ['GET'])
 def post(slug):
