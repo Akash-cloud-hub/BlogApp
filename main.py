@@ -51,11 +51,9 @@ def home():
 
     # Check if 'username' is in session
     if 'UserId' in session:
-        return 'Logged in as ' + session['NameOfUser'] + '<br>' + \
-            "<b><a href = '/logout'>click here to log out</a></b>"
+        return redirect(url_for('postlibrary'))
 
-    return "You are not logged in <br><a href = '/login'></b>" + \
-        "click here to log in</b></a>"
+    return redirect(url_for('login'))
 
 @app.route('/posts',methods=['GET'])
 def posts():
@@ -208,7 +206,7 @@ def create_post():
         cursor.commit()
         print(cursor)
 
-        return redirect(url_for('post'))
+        return redirect(url_for('post',slug = data.get('Slug')))
 
     return render_template('create_post.html')
 
@@ -222,9 +220,28 @@ def create_post():
 #     return "You are not logged in <br><a href = '/login'></b>" + \
 #            "click here to log in</b></a>"
 
-@app.route('/contact')
+@app.route('/contact',methods=['POST' , 'GET'])
 def contact():
-    return "post"
+    if request.method == 'POST':
+        data = {}
+        data = dict(request.form)
+        contact = {
+            'Name': data.get('Name'),
+            'Email': data.get('Email'),
+            'Message': data.get('Message'),
+            'CreatedOnDate': data.get('CreatedOnDate'),
+            'IsActive': 1,  # in SQL true = 1
+            'InstagramLink': data.get('InstagramLink'),
+            'TwitterLink': data.get('TwitterLink')
+        }
+        insert_query = utility.generate_insert_query("ContactInformation",contact)
+        print(insert_query)
+        cursor = performCRUD(insert_query)
+        cursor.commit()
+        cursor.close()
+        return "We will get in touch with you soon . "
+
+    return render_template('contact.html')
 
 
 if __name__ == '__main__':

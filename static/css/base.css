@@ -303,3 +303,37 @@ a {
 a:hover {
     color: #1abc9c; /* Turquoise */
 }
+
+
+/* Create Post */
+
+.form-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+.form-container form label {
+  margin-bottom: 5px;
+}
+.form-container form input[type="text"],
+.form-container form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+.form-container form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.form-container form button[type="submit"]:hover {
+  background-color: #0056b3;
+}
