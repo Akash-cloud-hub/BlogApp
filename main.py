@@ -4,6 +4,7 @@ import math
 import json
 import utility
 
+
 import re
 
 import pyodbc
@@ -78,7 +79,31 @@ def postlibrary():
         records = performCRUD(f"Select * From Posts")
         posts = utility.fetch_data_as_list_of_dicts(records)
         print(posts)
-        return render_template('library_posts.html' , posts = posts)
+        n = 4
+        last = math.ceil(len(posts)/n)
+        page = request.args.get('page',default = 2 , type = int)
+        print('page:' , page)
+        if not str(page).isnumeric():
+            page = 1
+        page = int(page)
+        j = (page-1) * n
+
+        posts = posts[j:j+n]
+        print("Sliced Posts : ")
+        print(posts)
+
+        if page == 1:
+            prev = '#'
+            next = '/?page=' + str(page+1)
+        elif page == last:
+            prev = '/?page=' + str(page-1)
+            next = '#'
+        else:
+            prev = '/?page=' + str(page-1)
+            next = '/?page=' + str(page + 1)
+
+
+        return render_template('library_posts.html' , posts = posts , prev = prev , next = next)
     else:
         error = {'error_message': 'Request failed , please make a Get Request ! ' }
         return render_template('error.html', error=error)
