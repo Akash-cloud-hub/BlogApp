@@ -2,8 +2,9 @@
 {% block title %}Library{% endblock %}
     {% block body %}
 <!--        Post-->
-        <article class="post">
 
+
+        <section class="post">
             <table>
                 <thead>
                     <tr>
@@ -30,9 +31,9 @@
             </table>
 
             <ul class="actions pagination">
-                <li><a href={{prev}}> < Prev page </a></li>
-                <li><a href={{next}}> Next page > </a></li>
+                <li><a href=/Library{{prev}}> < Prev page </a></li>
+                <li><a href=/Library{{next}}> Next page > </a></li>
             </ul>
 
-        </article>
+        </section>
     {% endblock %}

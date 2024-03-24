@@ -3,6 +3,9 @@ body, ul, ol, h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd {
     margin: 0;
     padding: 0;
 }
+body{
+    background: #333;
+}
 
 /* Set box-sizing to border-box for all elements */
 *, *::before, *::after {
@@ -35,7 +38,7 @@ body, ul, ol, h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd {
 }
 
 .links ul li a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -65,15 +68,11 @@ body, ul, ol, h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd {
     margin-bottom: 1rem;
 }
 
-.links ul li a {
-    color: #333;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.links ul li a:hover {
-    color: #555;
-}
+.search{
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;}
 
 /* Styling for actions */
 .actions.stacked {

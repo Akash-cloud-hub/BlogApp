@@ -73,7 +73,7 @@ def posts():
     else:
         return redirect(url_for('home'))
 
-@app.route("/Library",methods=['GET'])
+@app.route("/Library/",methods=['GET'])
 def postlibrary():
     if request.method == 'GET':
         records = performCRUD(f"Select * From Posts")
@@ -81,7 +81,7 @@ def postlibrary():
         print(posts)
         n = 4
         last = math.ceil(len(posts)/n)
-        page = request.args.get('page',default = 2 , type = int)
+        page = request.args.get('page')
         print('page:' , page)
         if not str(page).isnumeric():
             page = 1
@@ -103,7 +103,7 @@ def postlibrary():
             next = '/?page=' + str(page + 1)
 
 
-        return render_template('library_posts.html' , posts = posts , prev = prev , next = next)
+        return render_template('library_posts.html' , posts = posts , prev = prev , next = next , NameOfUser = session.get('NameOfUser'))
     else:
         error = {'error_message': 'Request failed , please make a Get Request ! ' }
         return render_template('error.html', error=error)
@@ -187,6 +187,11 @@ def login():
             # return redirect(url_for('login'))
 
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 @app.route('/create_post',methods=['POST','GET'])
 def create_post():
