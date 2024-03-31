@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block body %}
+<div class="container">
+    <p class="d-inline-flex gap-1">
+
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#posts" role="button" aria-expanded="false"
+           aria-controls="collapse">
+            Posts Library
+        </a>
+
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="/contact" role="button" aria-expanded="false"
+           aria-controls="collapse">
+            Contact
+        </a>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="/create_post" role="button" aria-expanded="false"
+           aria-controls="collapse">
+            Add new Post
+        </a>
+
+    </p>
+
+    <div class="collapse" id="posts">
+        <div class="card card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Post Id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {% for post in posts%}
+                <tr>
+                    <th>{{post.Id}}</th>
+                    <td>{{post.Title}}</td>
+                    <td>
+                        <a href="/edit/{{post.Id}}">
+                            <button type="button" class="btn btn-info">Edit</button>
+                        </a>
+
+                        <a href="/delete/{{post.Id}}">
+                            <button type="button" class="btn btn-info">Delete</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="collapse" id="contact">
+        <div class="card card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">SNO</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {% for cont in contacts%}
+                <tr>
+                    <th>{{cont.Id}}</th>
+                    <td>{{cont.Name}</td>
+                    <td>{{cont.Email}</td>
+                    <td>
+                        <a href="/editContact/{{cont.Id}}">
+                            <button type="button" class="btn btn-info">Edit</button>
+                        </a>
+
+                        <a href="/deleteContact/{{cont.Id}">
+                            <button type="button" class="btn btn-info">Delete</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -238,7 +238,7 @@ def create_post():
 
         return redirect(url_for('post',slug = data.get('Slug')))
 
-    return render_template('create_post.html')
+    return render_template('create_post.html',actionPost = '/create_post',buttonText = 'Create Post')
 
 
 # @app.route('/')
@@ -272,6 +272,57 @@ def contact():
         return "We will get in touch with you soon . "
 
     return render_template('contact.html')
+
+@app.route("/editPost/<int:PostId>",methods=['GET','POST'])
+def editContact(PostId):
+    if request.method == 'POST':
+        LoggedInUserId = session['UserId']
+        query = f"""
+                SELECT [po].[PostId],
+                [po].[Title],
+                [po].[Subtitle],
+                [po].[Location],
+                [po].[Author],
+                [po].[DatePosted],
+                [po].[Image],
+                [po].[Content1],
+                [po].[Content2],
+                [po].[Slug],
+                [po].[UserId],
+                [us].[UserRole] FROM [dbo].[Posts] po 
+                    left JOIN dbo.Users us 
+                    ON po.UserId=us.UserId
+                WHERE po.PostId = '{PostId}' """
+
+        records = performCRUD(query)
+        post = utility.fetch_data_as_list_of_dicts(records)
+        role = post[0].get('UserRole')
+        if role =='Admin' or LoggedInUserId == post[0].get('UserId'):
+            data = {}
+            data = dict(request.form)
+            updateQuery = f"""
+                    UPDATE [dbo].[Posts]
+                SET 
+                    [Title] = '{data.get('Title')}',
+                    [Subtitle] = '{data.get('Subtitle')}',
+                    [Location] = '{data.get('Location')}',
+                    [Author] = '{data.get('Author')}',
+                    [DatePosted] = '{data.get('DatePosted')}',
+                    [Image] = '{data.get('Image')}',
+                    [Content1] = '{data.get('Content1')}',
+                    [Content2] = '{data.get('Content2')}',
+                    [Slug] = '{data.get('Slug')}',
+                    [UserId] = '{data.get('UserId')}'
+                WHERE
+                    [PostId] = '{data.get('PostId')}'"""
+
+    return render_template('create_post.html', actionPost='/editPost/<int:PostId>', buttonText='Update Post')
+
+
+@app.route("/deleteContact/<int:id>",methods=['GET','POST'])
+def deleteContact():
+    if request.method == 'POST':
+
 
 
 if __name__ == '__main__':

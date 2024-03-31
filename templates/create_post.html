@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Upload blog{% endblock %}
     {% block body %}
-
+    {% if action=='create_post'%}
         <div class="form-container">
             <form method="post" action="/create_post">
 
@@ -32,8 +32,44 @@
                 <label for="Slug">Slug : </label>
                 <input type="text" name = "Slug" placeholder="Slug.." id = "Slug" required>
 
-                <button type="submit" class="button large">Create Post</button>
+                <button type="submit" class="button large">{{buttonText}}</button>
             </form>
         </div>
+    {% else %}
+
+        <div class="form-container">
+            <form method="post" action="/editPost/<int:PostId>">
+
+                <label for="Title">Title : </label>
+                <input type="text" name = "Title" placeholder="Title.."  required>
+
+                <label for="Subtitle">Subtitle : </label>
+                <input type="text" name = "Subtitle" placeholder="Subtitle.."  required>
+
+                <label for="Location">Location : </label>
+                <input type="text" name = "Location" placeholder="Location.."  required>
+
+                <label for="Author">Author : </label>
+                <input type="text" name = "Author" placeholder="Author.."  required>
+
+                <label for="DatePosted">DatePosted : </label>
+                <input type="datetime-local" name = "DatePosted" placeholder="DatePosted.."  required>
+
+                <label for="Image">Image : </label>
+                <input type="text" name = "Image" placeholder="Image.."  required>
+
+                <label for="Content1">Content 1 : </label>
+                <textarea name="Content1" ></textarea>
+
+                <label for="Content2">Content2 : </label>
+                <textarea name="Content2" ></textarea>
+
+                <label for="Slug">Slug : </label>
+                <input type="text" name = "Slug" placeholder="Slug.."  required>
+
+                <button type="submit" class="button large">{{buttonText}}</button>
+            </form>
+        </div>
+    {% endif %}
 
     {% endblock %}
