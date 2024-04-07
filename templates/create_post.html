@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Upload blog{% endblock %}
     {% block body %}
-    {% if action=='create_post'%}
+    {% if action=='create_post' %}
         <div class="form-container">
-            <form method="post" action="/create_post">
+            <form method="post" action="{{actionPost}}">
 
                 <label for="Title">Title : </label>
                 <input type="text" name = "Title" placeholder="Title.." id = "Title" required>
@@ -38,34 +38,36 @@
     {% else %}
 
         <div class="form-container">
-            <form method="post" action="/editPost/<int:PostId>">
+            <form method="post" action="{{actionPost}}">
+
+                <Label>Edit Post</Label>
 
                 <label for="Title">Title : </label>
-                <input type="text" name = "Title" placeholder="Title.."  required>
+                <input type="text" name = "Title" placeholder="Title.." value="{{post.Title}}"  required>
 
                 <label for="Subtitle">Subtitle : </label>
-                <input type="text" name = "Subtitle" placeholder="Subtitle.."  required>
+                <input type="text" name = "Subtitle" placeholder="Subtitle.." value="{{post.Subtitle}}" required>
 
                 <label for="Location">Location : </label>
-                <input type="text" name = "Location" placeholder="Location.."  required>
+                <input type="text" name = "Location" placeholder="Location.." value="{{post.Location}}" required>
 
                 <label for="Author">Author : </label>
-                <input type="text" name = "Author" placeholder="Author.."  required>
+                <input type="text" name = "Author" placeholder="Author.." value="{{post.Author}}" required>
 
                 <label for="DatePosted">DatePosted : </label>
-                <input type="datetime-local" name = "DatePosted" placeholder="DatePosted.."  required>
+                <input type="datetime-local" name = "DatePosted" placeholder="DatePosted.." value="{{post.DatePosted}}" required>
 
                 <label for="Image">Image : </label>
-                <input type="text" name = "Image" placeholder="Image.."  required>
+                <input type="text" name = "Image" placeholder="Image.." value="{{post.Image}}" required>
 
                 <label for="Content1">Content 1 : </label>
-                <textarea name="Content1" ></textarea>
+                <textarea name="Content1"  >{{post.Content1}}</textarea>
 
                 <label for="Content2">Content2 : </label>
-                <textarea name="Content2" ></textarea>
+                <textarea name="Content2" >{{post.Content2}}</textarea>
 
                 <label for="Slug">Slug : </label>
-                <input type="text" name = "Slug" placeholder="Slug.."  required>
+                <input type="text" name = "Slug" placeholder="Slug.." value="{{post.Slug}}" required>
 
                 <button type="submit" class="button large">{{buttonText}}</button>
             </form>

@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask , redirect , url_for , render_template , session , flash , request
 from datetime import *
 import math
@@ -169,7 +171,7 @@ def login():
     if request.method == 'POST':
         UserName = request.form.get('UserName')
         Password = request.form.get('Password')
-        records = performCRUD(f"Select UserId , NameOfUser  From Users Where UserName = '{UserName}' and Password='{Password}' ")
+        records = performCRUD(f"Select UserId , NameOfUser , UserRole  From Users Where UserName = '{UserName}' and Password='{Password}' ")
         user = utility.fetch_data_as_list_of_dicts(records)
 
         print(user)
@@ -177,6 +179,7 @@ def login():
         session['NameOfUser'] = user[0]['NameOfUser']
         # session['UserName'] = user[0]['UserName']
         session['UserId'] = user[0]['UserId']
+        session['UserRole'] = user[0]['UserRole']
 
         print(records)
         if user:
@@ -238,7 +241,7 @@ def create_post():
 
         return redirect(url_for('post',slug = data.get('Slug')))
 
-    return render_template('create_post.html',actionPost = '/create_post',buttonText = 'Create Post')
+    return render_template('create_post.html',action='create_post',actionPost = '/create_post',buttonText = 'Create Post')
 
 
 # @app.route('/')
@@ -275,55 +278,80 @@ def contact():
 
 @app.route("/editPost/<int:PostId>",methods=['GET','POST'])
 def editContact(PostId):
+    query = f"""
+                    SELECT [po].[PostId],
+                    [po].[Title],
+                    [po].[Subtitle],
+                    [po].[Location],
+                    [po].[Author],
+                    [po].[DatePosted],
+                    [po].[Image],
+                    [po].[Content1],
+                    [po].[Content2],
+                    [po].[Slug],
+                    [po].[UserId],
+                    [us].[UserRole] FROM [dbo].[Posts] po 
+                        left JOIN dbo.Users us 
+                        ON po.UserId=us.UserId
+                    WHERE po.PostId = '{PostId}' """
+
+    records = performCRUD(query)
+    post = utility.fetch_data_as_list_of_dicts(records)
+    print("The requested information from post : ")
+    print(post)
     if request.method == 'POST':
         LoggedInUserId = session['UserId']
-        query = f"""
-                SELECT [po].[PostId],
-                [po].[Title],
-                [po].[Subtitle],
-                [po].[Location],
-                [po].[Author],
-                [po].[DatePosted],
-                [po].[Image],
-                [po].[Content1],
-                [po].[Content2],
-                [po].[Slug],
-                [po].[UserId],
-                [us].[UserRole] FROM [dbo].[Posts] po 
-                    left JOIN dbo.Users us 
-                    ON po.UserId=us.UserId
-                WHERE po.PostId = '{PostId}' """
-
-        records = performCRUD(query)
-        post = utility.fetch_data_as_list_of_dicts(records)
         role = post[0].get('UserRole')
         if role =='Admin' or LoggedInUserId == post[0].get('UserId'):
+            print("Admin trying to edit...")
             data = {}
             data = dict(request.form)
+
+            data['DatePosted'] = utility.format_datetime(data.get('DatePosted','2024-01-04 00:00:00.000'))
             updateQuery = f"""
                     UPDATE [dbo].[Posts]
                 SET 
-                    [Title] = '{data.get('Title')}',
-                    [Subtitle] = '{data.get('Subtitle')}',
-                    [Location] = '{data.get('Location')}',
-                    [Author] = '{data.get('Author')}',
-                    [DatePosted] = '{data.get('DatePosted')}',
-                    [Image] = '{data.get('Image')}',
-                    [Content1] = '{data.get('Content1')}',
-                    [Content2] = '{data.get('Content2')}',
-                    [Slug] = '{data.get('Slug')}',
-                    [UserId] = '{data.get('UserId')}'
+                    [Title] = '{data.get('Title','Null')}',
+                    [Subtitle] = '{data.get('Subtitle','Null')}',
+                    [Location] = '{data.get('Location','Null')}',
+                    [Author] = '{data.get('Author','Null')}',
+                    [DatePosted] = '{data.get('DatePosted',f'{datetime.now()}')}',
+                    [Image] = '{data.get('Image','Null')}',
+                    [Content1] = '{data.get('Content1','Null')}',
+                    [Content2] = '{data.get('Content2','Null')}',
+                    [Slug] = '{data.get('Slug','Null')}'
                 WHERE
-                    [PostId] = '{data.get('PostId')}'"""
+                    [PostId] = '{PostId}'"""
+            print(updateQuery)
+            cursor = performCRUD(updateQuery)
+            cursor.commit()
 
-    return render_template('create_post.html', actionPost='/editPost/<int:PostId>', buttonText='Update Post')
+    return render_template('create_post.html', action= 'editing' , actionPost=f'/editPost/{int(PostId)}'
+                           , buttonText='Update Post', post = post[0] )
 
 
-@app.route("/deleteContact/<int:id>",methods=['GET','POST'])
-def deleteContact():
+@app.route("/deletePost/<int:PostId>",methods=['GET','POST'])
+def deletePost(PostId):
     if request.method == 'POST':
+        query = f"""DELETE FROM [dbo].[Posts]
+                    WHERE PostId = {PostId}"""
+        cursor = performCRUD(query)
+        cursor.commit()
+        return "deleted..."
+    return redirect(url_for('admin'))
 
-
+@app.route('/admin',methods=['GET'])
+def admin():
+    print(session)
+    userRole = session['UserRole']
+    if userRole == 'Admin':
+        records = performCRUD(f"Select PostId , Title From Posts")
+        post = utility.fetch_data_as_list_of_dicts(records)
+        contact_list = performCRUD(f"Select ContactInformationId , Name , Email  From ContactInformation")
+        contacts = utility.fetch_data_as_list_of_dicts(contact_list)
+        return render_template('/admin/index.html',posts = post , contacts = contacts)
+    else:
+        return 404,'Not Found'
 
 if __name__ == '__main__':
 #     cursor = connectToDb()

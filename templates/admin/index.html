@@ -1,87 +1,109 @@
-{% extends "base.html" %}
-{% block title %}Admin Dashboard{% endblock %}
-{% block body %}
-<div class="container">
-    <p class="d-inline-flex gap-1">
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
 
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#posts" role="button" aria-expanded="false"
-           aria-controls="collapse">
-            Posts Library
-        </a>
+    <div class="container">
+        <p class="d-inline-flex gap-1">
 
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="/contact" role="button" aria-expanded="false"
-           aria-controls="collapse">
-            Contact
-        </a>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="/create_post" role="button" aria-expanded="false"
-           aria-controls="collapse">
-            Add new Post
-        </a>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#posts" role="button" aria-expanded="false"
+               aria-controls="collapse">
+                Posts Library
+            </a>
 
-    </p>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#contact" role="button" aria-expanded="false"
+               aria-controls="collapse">
+                Contact
+            </a>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="/create_post" role="button" aria-expanded="false"
+               aria-controls="collapse">
+                Add new Post
+            </a>
 
-    <div class="collapse" id="posts">
-        <div class="card card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Post Id</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Action</th>
-                </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                {% for post in posts%}
-                <tr>
-                    <th>{{post.Id}}</th>
-                    <td>{{post.Title}}</td>
-                    <td>
-                        <a href="/edit/{{post.Id}}">
-                            <button type="button" class="btn btn-info">Edit</button>
-                        </a>
+        </p>
 
-                        <a href="/delete/{{post.Id}}">
-                            <button type="button" class="btn btn-info">Delete</button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="collapse" id="posts">
+            <div class="card card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Post Id</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for post in posts%}
+                    <tr>
+                        <th>{{post.PostId}}</th>
+                        <td>{{post.Title}}</td>
+                        <td>
+                            <form method = 'get' action="/editPost/{{post.PostId}}">
+                                <a>
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </a>
+                            </form>
+
+                            <form method = 'post' action="/deletePost/{{post.PostId}}">
+                                <a >
+                                    <button type="submit" class="btn btn-info">Delete</button>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="collapse" id="contact">
+            <div class="card card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">SNO</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for cont in contacts%}
+                    <tr>
+                        <th>{{cont.ContactInformationId}}</th>
+                        <td>{{cont.Name}}</td>
+                        <td>{{cont.Email}}</td>
+                        <td>
+                            <form method = 'get' action="/editContact/{{cont.ContactInformationId}}">
+                                <a>
+                                    <button type="submit" class="btn btn-info">Edit</button>
+                                </a>
+                            </form>
+
+                            <form method = 'post' action="/deleteContact/{{cont.ContactInformationId}}">
+
+                                <a>
+                                    <button type="submit" class="btn btn-info">Delete</button>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="collapse" id="contact">
-        <div class="card card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">SNO</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Action</th>
-                </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                {% for cont in contacts%}
-                <tr>
-                    <th>{{cont.Id}}</th>
-                    <td>{{cont.Name}</td>
-                    <td>{{cont.Email}</td>
-                    <td>
-                        <a href="/editContact/{{cont.Id}}">
-                            <button type="button" class="btn btn-info">Edit</button>
-                        </a>
-
-                        <a href="/deleteContact/{{cont.Id}">
-                            <button type="button" class="btn btn-info">Delete</button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+</html>
