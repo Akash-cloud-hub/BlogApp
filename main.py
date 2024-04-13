@@ -203,7 +203,11 @@ def create_post():
         try:
             data = dict(request.form)
             data['DatePosted'] = utility.format_datetime(data.get('DatePosted'))
-        except:
+            data['Image'] = f'images/img/{data["Image"]}'
+            file = request.files['Image']
+            file.save(data['Image'])
+        except Exception as e:
+            print(e)
             return "There has been an error creating the post , please try again !"
 
         print(data)

@@ -3,7 +3,7 @@
     {% block body %}
     {% if action=='create_post' %}
         <div class="form-container">
-            <form method="post" action="{{actionPost}}">
+            <form method="post" action="{{actionPost}}" enctype="multipart/form-data">
 
                 <label for="Title">Title : </label>
                 <input type="text" name = "Title" placeholder="Title.." id = "Title" required>
@@ -21,7 +21,7 @@
                 <input type="datetime-local" name = "DatePosted" placeholder="DatePosted.." id = "DatePosted" required>
 
                 <label for="Image">Image : </label>
-                <input type="text" name = "Image" placeholder="Image.." id = "Image" required>
+                <input type="file" name = "Image" placeholder="Image.." id = "Image" required>
 
                 <label for="Content1">Content 1 : </label>
                 <textarea name="Content1" id="Content1"></textarea>
@@ -58,7 +58,7 @@
                 <input type="datetime-local" name = "DatePosted" placeholder="DatePosted.." value="{{post.DatePosted}}" required>
 
                 <label for="Image">Image : </label>
-                <input type="text" name = "Image" placeholder="Image.." value="{{post.Image}}" required>
+                <input type="file" name = "Image" placeholder="Image.." value="{{post.Image}}" required>
 
                 <label for="Content1">Content 1 : </label>
                 <textarea name="Content1"  >{{post.Content1}}</textarea>
