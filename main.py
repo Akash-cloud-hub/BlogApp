@@ -5,6 +5,7 @@ from datetime import *
 import math
 import json
 import utility
+import os
 
 
 import re
@@ -80,6 +81,9 @@ def postlibrary():
     if request.method == 'GET':
         records = performCRUD(f"Select * From Posts")
         posts = utility.fetch_data_as_list_of_dicts(records)
+        for i in range(len(posts)):
+            posts[i]['SRNO'] = i+1
+
         print(posts)
         n = 4
         last = math.ceil(len(posts)/n)
@@ -94,8 +98,11 @@ def postlibrary():
         print("Sliced Posts : ")
         print(posts)
 
+        search_SRNO = request.form.get('search_SRNO')
+        SRNO_slug = posts[int('SRNO')][]
+
         if page == 1:
-            prev = '#'
+            prev = '/?page=' + str(last)
             next = '/?page=' + str(page+1)
         elif page == last:
             prev = '/?page=' + str(page-1)
@@ -196,19 +203,30 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+UPLOAD_FOLDER = 'static/images/img'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 @app.route('/create_post',methods=['POST','GET'])
 def create_post():
+
     if request.method=='POST':
         data = {}
         try:
             data = dict(request.form)
             data['DatePosted'] = utility.format_datetime(data.get('DatePosted'))
-            data['Image'] = f'images/img/{data["Image"]}'
+            if 'Image' not in request.files:
+                return "No file part"
             file = request.files['Image']
-            file.save(data['Image'])
+            if file.filename == '':
+                return 'No selected file'
+            if file:
+                filename = file.filename
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                data['Image'] = f'images/img/{filename}'
         except Exception as e:
             print(e)
-            return "There has been an error creating the post , please try again !"
+            return "There has been an error creating the post, please try again!"
 
         print(data)
         query = f'''

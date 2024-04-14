@@ -3,6 +3,11 @@
     {% block body %}
 <!--        Post-->
 
+        <label for="SRNO">Search for SRNO of Blog : </label>
+        <input type="number" name="search_SRNO" id="SRNO">
+        <form action="/Library/">
+            <button type="submit">Search</button>
+        </form>
 
         <section class="post">
             <table>
@@ -19,9 +24,9 @@
                 <tbody>
                     {% for post in posts %}
                     <tr>
-                        <td>{{loop.index}}</td>
+                        <td>{{post['SRNO']}}</td>
                         <td>{{post['Author']}}</td>
-                        <td>{{post['Title']}}</td>=
+                        <td>{{post['Title']}}</td>
                         <td>{{post['Subtitle']}}</td>
                         <td>{{post['DatePosted']}}</td>
                         <td><a href="/post/{{post['Slug']}}">Link</a></td>

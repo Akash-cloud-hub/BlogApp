@@ -336,3 +336,7 @@ a:hover {
 .form-container form button[type="submit"]:hover {
   background-color: #0056b3;
 }
+
+.post_image{
+    height: 80vh;
+}
