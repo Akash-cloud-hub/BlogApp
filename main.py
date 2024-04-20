@@ -75,11 +75,52 @@ def posts():
         return render_template("post.html", post=posts)
     else:
         return redirect(url_for('home'))
+@app.route("/SearchPost",methods=['POST','GET'])
+def searchPost():
+    print(request.method)
+    if request.method == 'POST':
+        search_Title= request.form.get('search_Title')
 
-@app.route("/Library/",methods=['GET'])
-def postlibrary():
+        records = performCRUD(f"Select * From Posts where Title like '%{search_Title}%' or Content1 like '%{search_Title}%' ")
+        print(f"Select * From Posts where Title like '%{search_Title}%' or Content1 like '%{search_Title}%' ")
+        posts = utility.fetch_data_as_list_of_dicts(records)
+        print(f" searched posts : {posts}")
+
+        n = 4
+        last = math.ceil(len(posts) / n)
+        page = request.args.get('page')
+        print('page:', page)
+        if not str(page).isnumeric():
+            page = 1
+        page = int(page)
+        j = (page - 1) * n
+
+        posts = posts[j:j + n]
+        print("Sliced Posts : ")
+        print(posts)
+
+        if page == 1:
+            prev = '/?page=' + str(last)
+            next = '/?page=' + str(page + 1)
+        elif page == last:
+            prev = '/?page=' + str(page - 1)
+            next = '#'
+        else:
+            prev = '/?page=' + str(page - 1)
+            next = '/?page=' + str(page + 1)
+
+        return render_template('library_posts.html' , posts = posts , prev = prev , next = next , NameOfUser = session.get('NameOfUser'))
+    else:
+        error = {'error_message': 'Request failed , please make a Post Request ! ' }
+        return render_template('error.html', error=error)
+
+
+
+
+@app.route("/Library/<search_text>",methods=['GET'])
+def postlibrary(search_text = 'All'):
     if request.method == 'GET':
-        records = performCRUD(f"Select * From Posts")
+        records = performCRUD(f"""Select * From Posts where ({search_text} = 'All' or Content1 like '%{search_text}%' or Title like )"" ")
         posts = utility.fetch_data_as_list_of_dicts(records)
         for i in range(len(posts)):
             posts[i]['SRNO'] = i+1
@@ -98,8 +139,6 @@ def postlibrary():
         print("Sliced Posts : ")
         print(posts)
 
-        search_SRNO = request.form.get('search_SRNO')
-        SRNO_slug = posts[int('SRNO')][]
 
         if page == 1:
             prev = '/?page=' + str(last)
