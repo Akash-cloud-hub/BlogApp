@@ -3,9 +3,9 @@
     {% block body %}
 <!--        Post-->
 
-        <label for="SRNO">Search for SRNO of Blog : </label>
-        <form method ='post' action="/SearchPost">
-            <input type="text" name="search_Title" id="SRNO">
+        <label for="search_text">Search for SRNO of Blog : </label>
+        <form method ='get' action="/Library/">
+            <input type="text" name="search_text" id="search_text">
             <button type="submit">Search</button>
         </form>
 
